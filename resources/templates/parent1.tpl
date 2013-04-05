@@ -1,0 +1,1 @@
+<parent1>{{{ child-content }}}</parent1>
