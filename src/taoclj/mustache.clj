@@ -5,7 +5,7 @@
   (:import [java.net URI]))
 
 (def ^:dynamic *file-ext* ".tpl")
-(def ^:dynamic *templates-directory* "resources/templates")
+(def ^:dynamic *templates-directory* "ui")
 
 
 (defn parse [raw]
