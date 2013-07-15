@@ -1,1 +1,1 @@
-${:parent "parent1.tpl"}${{message}}
+<%{:parent "parent1.tpl"}%>{{message}}

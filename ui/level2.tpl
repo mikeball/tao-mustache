@@ -1,1 +1,1 @@
-${:parent "level1.tpl"}$<l2>{{{ child-content }}}</l2>
+<%{:parent "level1.tpl"}%><l2>{{{ child-content }}}</l2>

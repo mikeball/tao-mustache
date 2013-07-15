@@ -1,1 +1,1 @@
-${:parent "../parent1.tpl"}$*child2*
+<%{:parent "../parent1.tpl"}%>*child2*

@@ -8,7 +8,7 @@
          {:config nil :content "*content*"})))
 
 (deftest templates-with-config-are-parsed
-  (is (= (tpl/parse "${:parent \"../parent1.tpl\"}$*content*")
+  (is (= (tpl/parse "<%{:parent \"../parent1.tpl\"}%>*content*")
          {:config {:parent "../parent1.tpl"} :content "*content*"})))
 
 (deftest simple-templates-load

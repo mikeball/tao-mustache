@@ -9,11 +9,11 @@
 
 
 (defn parse [raw]
-  (if-not (.startsWith raw "${")
+  (if-not (.startsWith raw "<%{")
     {:config nil
      :content raw}
-    (let [start (+ 1(.indexOf raw "${"))
-          end (+ 1 (.indexOf raw "}$"))
+    (let [start (+ 2 (.indexOf raw "<%{"))
+          end (+ 2 (.indexOf raw "}%>"))
           raw-config (.substring raw start end)]
       {:config (edn/read-string raw-config)
        :content (.substring raw (+ 1 end))})))

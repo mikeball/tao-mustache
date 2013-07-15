@@ -1,1 +1,1 @@
-${:parent "level2.tpl"}$<l3>{{message}}</l3>
+<%{:parent "level2.tpl"}%><l3>{{message}}</l3>
