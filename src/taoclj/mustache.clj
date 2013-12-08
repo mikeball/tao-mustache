@@ -1,11 +1,8 @@
 (ns taoclj.mustache
   (:require [clojure.string :as string]
             [clojure.tools.reader.edn :as edn]
-            [me.shenfeng.mustache :as m])
-  (:import [java.net URI]))
-
-(def ^:dynamic *file-ext* ".tpl")
-(def ^:dynamic *templates-directory* "ui")
+            [me.shenfeng.mustache :as m]
+            [taoclj.mustache.paths :as paths]))
 
 
 (defn parse [raw]
@@ -19,38 +16,28 @@
        :content (.substring raw (+ 1 end))})))
 
 
-(defn- get-path 
-  "Given a keyword, returns the file path as a sequence"
-  [t]
-  (concat (string/split *templates-directory* #"/")
-          (string/split (name t) #"\.")))
-
-(defn- normalize-path [path]
-  (-> (URI. path)
-      (.normalize)
-      (.getPath)))
-
-(defn- get-file-path 
-  "Returns the file path given a sequence based path including file extension"
-  [path]
-  (str (string/join "/" path) 
-       (if-not (.endsWith (last path) *file-ext*) *file-ext*)))
-
-(defn- load-hierarchy [path]
-  (let [template (parse (slurp (get-file-path path)))
-        parent (-> template :config :parent)
+(defn load-hierarchy [template-path]
+  (let [template (parse (slurp template-path))
+        parent-path (-> template :config :parent)
         content (template :content)]
-    (if-not parent
-      content
-      (let [num (if (.startsWith parent "../")
-                       (- (count path) 2)
-                       (- (count path) 1))]
-        (string/replace (load-hierarchy (concat (take num path) [(string/replace parent "../" "")]))
-                       "{{{ child-content }}}" 
-                       content)))))
+    (if-not parent-path content
+      (string/replace
+       (load-hierarchy
+        (paths/resolve-file-relative-path template-path
+                                          parent-path))
+       "{{{ child-content }}}"
+       content))))
+
+
+
+(def ^:dynamic *file-ext* "tpl")
+(def ^:dynamic *templates-directory* "ui")
 
 (defn load-template [name]
-  (load-hierarchy (get-path name)))
+  (load-hierarchy
+     (paths/infer-template-path *templates-directory*
+                                name
+                                *file-ext*)))
 
 
 (defn render [name data]
@@ -58,15 +45,14 @@
     (m/to-html template data)))
 
 
+;; generate function that returns fn that
+;; either caches or does not cache the constructed templates
+;; to handle the dev/production mode issues?
 
 
 
 
 
-;; this belongs in lein-mock I believe!
-;; (defn get-keyword-from-path [path]
-;;   (let [full-path (if (.endsWith path "/") (str path "index") path)]
-;;     (keyword (subs (string/replace full-path "/" ".") 1))))
 
 
 

@@ -19,7 +19,10 @@
 (deftest child-templates-load
   (are [name expected] (= (tpl/load-template name) expected)
        :child1 "<parent1>*child1*</parent1>"
-       :adirectory.child2 "<parent1>*child2*</parent1>"))
+       :adirectory.child2 "<parent1>*child2*</parent1>"
+       :adirectory.bdirectory.child5 "<parent1>*child5*</parent1>"))
+
+
 
 
 (deftest simple-template-renders
@@ -45,6 +48,11 @@
 (deftest multi-level-templates-render
   (is (= (tpl/render :adirectory.sublevel4 {:message "*hi sl4*"})
          "<l1><l2><sl3><sl4>*hi sl4*</sl4></sl3></l2></l1>")))
+
+
+(clojure.test/run-tests
+ 'taoclj.mustache-test)
+
 
 
 ;; this belongs in mock!!!
