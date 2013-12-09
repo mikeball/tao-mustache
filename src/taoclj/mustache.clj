@@ -30,24 +30,25 @@
 
 
 
-(def ^:dynamic *file-ext* "tpl")
-(def ^:dynamic *templates-directory* "ui")
-
-(defn load-template [name]
+(defn load-template [directory name extension]
   (load-hierarchy
-     (paths/infer-template-path *templates-directory*
+     (paths/infer-template-path directory
                                 name
-                                *file-ext*)))
+                                extension)))
 
 
-(defn render [name data]
-  (let [template (m/mk-template (load-template name))]
-    (m/to-html template data)))
+(def load-cached-template (memoize load-template))
 
 
-;; generate function that returns fn that
-;; either caches or does not cache the constructed templates
-;; to handle the dev/production mode issues?
+(defn gen-renderer [dir ext cached]
+  (fn render [name data]
+    (let [template (if cached
+                     (load-cached-template dir name ext)
+                     (load-template dir name ext))]
+
+      (m/to-html (m/mk-template template)
+                 data))))
+
 
 
 
